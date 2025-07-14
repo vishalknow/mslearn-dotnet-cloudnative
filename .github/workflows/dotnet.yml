@@ -54,7 +54,7 @@ jobs:
     - name: Create Azure Container App (first-time only)
       run: |
         az containerapp create \
-          --name ACA_PRODUCT \
+          --name aca_product \
           --resource-group ${{ secrets.RESOURCE_GROUP }} \
           --environment ${{ secrets.ACA_ENVIRONMENT }} \
           --image ${{ secrets.ACR_NAME }}.azurecr.io/product:latest \
@@ -64,7 +64,7 @@ jobs:
           --location ${{ secrets.AZURE_REGION }}
 
         az containerapp create \
-          --name ACA_STORE \
+          --name aca_store \
           --resource-group ${{ secrets.RESOURCE_GROUP }} \
           --environment ${{ secrets.ACA_ENVIRONMENT }} \
           --image ${{ secrets.ACR_NAME }}.azurecr.io/store:latest \
