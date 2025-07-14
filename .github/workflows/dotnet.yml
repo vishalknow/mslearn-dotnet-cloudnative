@@ -68,8 +68,8 @@ jobs:
           --image ${{ secrets.ACR_NAME }}.azurecr.io/product:latest \
           --registry-server ${{ secrets.ACR_NAME }}.azurecr.io \
           --ingress external \
-          --target-port 80 \
-          --location ${{ secrets.AZURE_REGION }}
+          --target-port 80 
+#          --location ${{ secrets.AZURE_REGION }}
 
         az containerapp create \
           --name aca-store \
@@ -78,8 +78,8 @@ jobs:
           --image ${{ secrets.ACR_NAME }}.azurecr.io/store:latest \
           --registry-server ${{ secrets.ACR_NAME }}.azurecr.io \
           --ingress external \
-          --target-port 80 \
-          --location ${{ secrets.AZURE_REGION }}
+          --target-port 80 
+#          --location ${{ secrets.AZURE_REGION }}
 
 #    - name: Deploy to Azure Container App
 #      run: |
