@@ -51,6 +51,14 @@ jobs:
         docker push ${{ secrets.ACR_NAME }}.azurecr.io/product:latest
         docker push ${{ secrets.ACR_NAME }}.azurecr.io/store:latest
 
+#   - name: Create ACA environment
+#     run: |
+#       az containerapp env create \
+#        --name <your-env-name> \
+#        --resource-group ${{ secrets.RESOURCE_GROUP }} \
+#        --location ${{ secrets.AZURE_REGION }}
+
+
     - name: Create Azure Container App (first-time only)
       run: |
         az containerapp create \
