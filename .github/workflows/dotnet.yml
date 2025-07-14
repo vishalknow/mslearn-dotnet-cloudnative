@@ -16,16 +16,67 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+    
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 8.0.x
+        
     - name: Restore dependencies
       run: dotnet restore dotnet-docker/eShopLite.sln
+      
     - name: Build
       run: dotnet build dotnet-docker/eShopLite.sln
 
-    - name: Docker Image Creation
+#    - name: Docker Image Creation
+#      run: |
+#        docker build -t product:latest -f dotnet-docker/finished-files/Dockerfile ./dotnet-docker
+#        docker build -t store:latest -f dotnet-docker/finished-files/Dockerfile.store ./dotnet-docker
+
+    - name: Login to Azure
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Log in to ACR
+      run: az acr login --name ${{ secrets.ACR_NAME }}
+
+    - name: Build and tag Docker image
       run: |
-        docker build -t product:latest -f dotnet-docker/finished-files/Dockerfile ./dotnet-docker
-        docker build -t store:latest -f dotnet-docker/finished-files/Dockerfile.store ./dotnet-docker
+        docker build -t ${{ secrets.ACR_NAME }}.azurecr.io/product:latest -f dotnet-docker/finished-files/Dockerfile ./dotnet-docker
+        docker build -t ${{ secrets.ACR_NAME }}.azurecr.io/store:latest -f dotnet-docker/finished-files/Dockerfile.store ./dotnet-docker
+
+    - name: Push image to ACR
+      run: |
+        docker push ${{ secrets.ACR_NAME }}.azurecr.io/product:latest
+        docker push ${{ secrets.ACR_NAME }}.azurecr.io/store:latest
+
+    - name: Create Azure Container App (first-time only)
+      run: |
+        az containerapp create \
+          --name ${{ secrets.ACA_NAME }} \
+          --resource-group ${{ secrets.RESOURCE_GROUP }} \
+          --environment ${{ secrets.ACA_ENVIRONMENT }} \
+          --image ${{ secrets.ACR_NAME }}.azurecr.io/product:latest \
+          --registry-server ${{ secrets.ACR_NAME }}.azurecr.io \
+          --ingress external \
+          --target-port 80 \
+          --location ${{ secrets.AZURE_REGION }}
+
+        az containerapp create \
+          --name ${{ secrets.ACA_NAME }} \
+          --resource-group ${{ secrets.RESOURCE_GROUP }} \
+          --environment ${{ secrets.ACA_ENVIRONMENT }} \
+          --image ${{ secrets.ACR_NAME }}.azurecr.io/store:latest \
+          --registry-server ${{ secrets.ACR_NAME }}.azurecr.io \
+          --ingress external \
+          --target-port 80 \
+          --location ${{ secrets.AZURE_REGION }}
+
+#    - name: Deploy to Azure Container App
+#      run: |
+#        az containerapp update \
+#          --name ${{ secrets.ACA_NAME }} \
+#          --resource-group ${{ secrets.RESOURCE_GROUP }} \
+#          --image ${{ secrets.ACR_NAME }}.azurecr.io/product:latest \
+#          --registry-server ${{ secrets.ACR_NAME }}.azurecr.io
