@@ -1,7 +1,7 @@
 # This workflow will build a .NET project
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
 
-name: .NET
+name: Test Container App CI CD
 
 on:
   push:
@@ -54,7 +54,7 @@ jobs:
     - name: Create Azure Container App (first-time only)
       run: |
         az containerapp create \
-          --name ${{ secrets.ACA_NAME }} \
+          --name ACA_PRODUCT \
           --resource-group ${{ secrets.RESOURCE_GROUP }} \
           --environment ${{ secrets.ACA_ENVIRONMENT }} \
           --image ${{ secrets.ACR_NAME }}.azurecr.io/product:latest \
@@ -64,7 +64,7 @@ jobs:
           --location ${{ secrets.AZURE_REGION }}
 
         az containerapp create \
-          --name ${{ secrets.ACA_NAME }} \
+          --name ACA_STORE \
           --resource-group ${{ secrets.RESOURCE_GROUP }} \
           --environment ${{ secrets.ACA_ENVIRONMENT }} \
           --image ${{ secrets.ACR_NAME }}.azurecr.io/store:latest \
