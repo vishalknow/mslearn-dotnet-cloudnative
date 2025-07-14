@@ -51,12 +51,12 @@ jobs:
         docker push ${{ secrets.ACR_NAME }}.azurecr.io/product:latest
         docker push ${{ secrets.ACR_NAME }}.azurecr.io/store:latest
 
-#   - name: Create ACA environment
-#     run: |
-#       az containerapp env create \
-#        --name <your-env-name> \
-#        --resource-group ${{ secrets.RESOURCE_GROUP }} \
-#        --location ${{ secrets.AZURE_REGION }}
+    - name: Create ACA environment
+      run: |
+       az containerapp env create \
+        --name my-aca-env \
+        --resource-group ${{ secrets.RESOURCE_GROUP }} \
+        --location ${{ secrets.AZURE_REGION }}
 
 
     - name: Create Azure Container App (first-time only)
@@ -64,7 +64,7 @@ jobs:
         az containerapp create \
           --name aca-product \
           --resource-group ${{ secrets.RESOURCE_GROUP }} \
-          --environment ${{ secrets.ACA_ENVIRONMENT }} \
+          --environment my-aca-env \
           --image ${{ secrets.ACR_NAME }}.azurecr.io/product:latest \
           --registry-server ${{ secrets.ACR_NAME }}.azurecr.io \
           --ingress external \
@@ -73,7 +73,7 @@ jobs:
         az containerapp create \
           --name aca-store \
           --resource-group ${{ secrets.RESOURCE_GROUP }} \
-          --environment ${{ secrets.ACA_ENVIRONMENT }} \
+          --environment my-aca-env \
           --image ${{ secrets.ACR_NAME }}.azurecr.io/store:latest \
           --registry-server ${{ secrets.ACR_NAME }}.azurecr.io \
           --ingress external \
