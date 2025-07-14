@@ -27,5 +27,5 @@ jobs:
 
     - name: Docker Image Creation
       run: |
-        docker build -t product:latest -f dotnet-docker/finished-files/dockerfile
-        docker build -t store:latest -f dotnet-docker/finished-files/dockerfile.store
+        docker build -t product:latest -f dotnet-docker/finished-files/dockerfile ./dotnet-docker/Products
+        docker build -t store:latest -f dotnet-docker/finished-files/dockerfile.store ./dotnet-docker/Store
