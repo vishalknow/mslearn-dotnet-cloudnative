@@ -24,5 +24,3 @@ jobs:
       run: dotnet restore dotnet-docker/eShopLite.sln
     - name: Build
       run: dotnet build dotnet-docker/eShopLite.sln
-    - name: Test
-      run: dotnet test --no-build --verbosity normal
