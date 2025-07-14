@@ -24,3 +24,8 @@ jobs:
       run: dotnet restore dotnet-docker/eShopLite.sln
     - name: Build
       run: dotnet build dotnet-docker/eShopLite.sln
+
+    - name: Docker Image Creation
+      run: |
+        docker build -t product:latest -f dotnet-docker/finished-files/dockerfile
+        docker build -t store:latest -f dotnet-docker/finished-files/dockerfile.store
