@@ -70,7 +70,13 @@ jobs:
           --registry-username ${{ secrets.ACR_USERNAME }} \
           --registry-password ${{ secrets.ACR_PASSWORD }} \
           --ingress external \
-          --target-port 80 
+          --target-port 0 
+
+        PRODUCT_FQDN=$(az containerapp show \
+          --name aca-product \
+          --resource-group ${{ secrets.RESOURCE_GROUP }} \
+          --query properties.configuration.ingress.fqdn \
+          -o tsv)
 
         az containerapp create \
           --name aca-store \
@@ -81,7 +87,12 @@ jobs:
           --registry-username ${{ secrets.ACR_USERNAME }} \
           --registry-password ${{ secrets.ACR_PASSWORD }} \
           --ingress external \
-          --target-port 80 
+          --target-port 0 
+
+        az containerapp update \
+          --name aca-store \
+          --resource-group ${{ secrets.RESOURCE_GROUP }} \
+          --set-env-vars ProductEndpoint=https://$PRODUCT_FQDN//api//product
 
 #    - name: Deploy to Azure Container App
 #      run: |
